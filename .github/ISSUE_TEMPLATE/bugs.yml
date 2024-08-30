@@ -1,0 +1,49 @@
+name: SB Engine Bug report tab
+description: Report bugs with the SB Engine here
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe your bug here."
+    validations:
+      required: true
+
+  - type: textarea
+    id: terminal
+    attributes:
+      label: "Command Prompt/Terminal logs (if existing)"
+      render: bash
+    validations:
+      required: false
+
+  - type: dropdown
+    id: modding
+    attributes:
+      label: "Are you modding a build from source or with Lua?"
+      options:
+        - Lua
+        - Source
+        - No (I am not using any programming language)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: btarget
+    attributes:
+      label: "What is your current build target?"
+      options:
+        - "Windows x64/x32"
+        - "Linux Mint/Ubuntu/Debian/Fedora"
+        - "MacOS"
+        - "Android x32/x64"
+    validations:
+      required: true
+
+  - type: input
+    id: buildsummary
+    attributes:
+      label: "Did you edit anything in this build? If so, mention or summarize your changes."
+      placeholder: "Yes, I edited State.hx, SubState.hx or FileName.hx and tried to add a new option"
+    validations:
+      required: true

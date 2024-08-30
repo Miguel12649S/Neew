@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<!-- _________________________ Application Settings _________________________ -->
+
+	<app title="Friday Night Funkin': SB Engine" file="StefanBeta" root="SB Engine" packageName="com.stefan2008.sbengine" package="com.stefan2008.sbengine" main="Main" version="3.1.0b" company="Stefan2008" />
+
+	<!--Switch Export with Unique ApplicationID and Icon-->
+	<set name="APP_ID" value="0x0100f6c013bbc000" />
+
+	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
+	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/> <!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
+
+	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
+	<set name="SWF_VERSION" value="11.8" />
+
+	<!-- ____________________________ Window Settings ___________________________ -->
+
+	<!--These window settings apply to all targets-->
+	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />
+
+	<!--HTML5-specific-->
+	<window if="html5" resizable="true" />
+
+	<!--Desktop-specific-->
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
+
+	<!--Mobile-specific-->
+	<window if="mobile" orientation="landscape" fullscreen="true" width="1280" height="720" resizable="false"/>
+
+	<!--Switch-specific-->
+	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
+
+	<!-- _____________________________ Path Settings ____________________________ -->
+
+	<set name="BUILD_DIR" value="export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/release" unless="debug" />
+	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
+
+	<classpath name="source" />
+	
+	<!-- PSYCH ENGINE CUSTOMIZATION -->
+	<define name="HSCRIPT_ALLOWED" if="desktop || android"  />
+	<define name="MODS_ALLOWED" if="desktop || android" />
+	<define name="LUA_ALLOWED" if="desktop || android"/>
+	<define name="DISCORD_ALLOWED" if="desktop || cpp" unless="hl || android"/>
+	<define name="VIDEOS_ALLOWED" if="web || windows || android" unless="32bits || linux"/>
+	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE THE PSYCH LOGO FROM LOADING SCREEN -->
+	<define name="SHOW_LOADING_SCREEN" />
+	<define name="CRASH_HANDLER" if="desktop release || android" />
+
+	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/preload" rename="assets" exclude="*.mp3"  unless="web"/>
+
+	<!-- <define name="PRELOAD_ALL" /> -->
+	<define name="PRELOAD_ALL" unless="web" />
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+	
+	<library name="videos"        preload="true" />
+    <section if="PRELOAD_ALL">
+		<library name="songs"         preload="true" />
+		<library name="shared"        preload="true" />
+		<library name="week_assets"   preload="true" />
+	</section>
+	
+	<section if="NO_PRELOAD_ALL">
+		<library name="songs"         preload="false" />
+		<library name="shared"        preload="false" />
+		<library name="week_assets"   preload="false" />
+	</section>
+	
+	<assets path="assets/videos"        library="videos"        if="VIDEOS_ALLOWED"/>
+	<assets path="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
+	<assets path="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
+	<assets path="assets/shared"        library="shared"        exclude="*.ogg" if="web"/>
+	<assets path="assets/shared"        library="shared"        exclude="*.mp3" unless="web"/>
+	<assets path="assets/week_assets"   library="week_assets"   rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/week_assets"   library="week_assets"   rename="assets" exclude="*.mp3" unless="web"/>
+	
+	<section if="MODS_ALLOWED">
+		<assets path='example_mods' rename='mods' embed='false'/>
+	</section>
+	<assets path="CHANGELOGS.md" rename='changelogs.txt' />
+	<assets path="assets/fonts" />
+	
+	<!-- _______________________________ Libraries ______________________________ -->
+
+	<haxedev set='webgl' />
+	<haxelib name="flixel" />
+	<haxelib name="flixel-ui" />
+	<haxelib name="flixel-addons" />
+
+	<!--Psych stuff needed-->
+	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
+	<haxelib name="hscript-iris" if="HSCRIPT_ALLOWED" version="1.0.2"/>
+	<haxelib name="hxCodec" if="VIDEOS_ALLOWED"/>
+    <haxelib name="extension-androidtools" if="android"/>
+	<haxelib name="AndroidDialogs" if = "android"/>
+	<haxelib name="devicelanguage" if = "android"/>
+	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED"/>
+	<haxelib name="tjson" />
+	<haxedef name="openflPos" if="desktop"/>
+	<haxedef name="hscriptPos" />
+	<haxelib name="flxanimate"/>
+	<haxelib name="funkin.vis"/>
+	<haxelib name="grig.audio" />
+
+	<!-- Disable Discord IO Thread -->
+	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
+	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
+
+	<!-- Enables a terminal log prompt on debug builds -->
+	<haxelib name="hxcpp-debug-server" if="desktop debug"  />
+	<haxedef name="HXC_LIBVLC_LOGGING" if="VIDEOS_ALLOWED debug" />
+
+	<!--Disable the Flixel core focus lost screen-->
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
+	
+	<!-- Show debug traces for hxCodec -->
+	<haxedef name="HXC_DEBUG_TRACE" if="debug" />
+	
+	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
+	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+
+	<!--Enable this for Nape release builds for a serious peformance improvement-->
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+	
+	<!--Used for Izzy Engine's crash handler-->
+	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
+	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
+
+	<!--Used to ignore no deprecreationed warning shits for TJSON and PlayState-->
+	<haxedef name='no-deprecation-warnings' />
+
+	<!-- __________________________ Mobile Stuff _______________________________ -->
+	<config:android permission="android.permission.READ_EXTERNAL_STORAGE" if="android"/>
+	<config:android permission="android.permission.WRITE_EXTERNAL_STORAGE" if="android"/>
+    <config:android gradle-version="7.5.1" />
+    <config:android gradle-plugin="7.3.1" />
+
+	<!--Avoid memory leaks with for loops in HScript-->
+	<haxedef name="loop_unroll_max_cost" value="25" />
+	<haxedef name="DISABLED_MACRO_SUPERLATIVE" />
+
+	<!--Macro fixes-->
+	<haxeflag name="--macro" value="allowPackage('flash')" />
+	<haxeflag name="--macro" value="include('my.pack')" />
+	<haxeflag name="-dce no" />
+	<haxeflag name="--macro" value="include('flixel', true, [ 'flixel.addons.editors.spine.*', 'flixel.addons.nape.*', 'flixel.system.macros.*' ])" />
+
+	<!-- ____________________________ Custom _______________________________ -->
+
+	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+
+	<assets path='applicationIcon/iconOG.png' rename='icon.png' if="linux" />
+	
+	<icon path="applicationIcon/icon16.png" size='16'/>
+	<icon path="applicationIcon/icon32.png" size='32'/>
+	<icon path="applicationIcon/icon64.png" size='64'/>
+	<icon path="applicationIcon/icon128.png" size='128'/>
+	<icon path="applicationIcon/iconOG.png" />
+</project>
